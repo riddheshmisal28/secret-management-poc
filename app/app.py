@@ -1,17 +1,18 @@
 from config import Config
+from secret_provider import EnvSecretProvider
 
 
-def main(secret_provider):
-    config = Config(secret_provider)
+def main():
+    provider = EnvSecretProvider()
 
-    print(f"DB Host: {config.db_host}")
-    print(f"DB User: {config.db_user}")
-    print(
-        f"DB Password: {'*' * len(config.db_password)}"
-    )
+    config = Config(provider)
+
+    print("=== Configuration Loaded ===")
+    print(f"DB_HOST: {config.db_host}")
+    print(f"DB_USER: {config.db_user}")
+    print(f"DB_PASSWORD: {'*' * len(config.db_password)}")
+    print(f"JWT_SECRET: {'*' * len(config.jwt_secret)}")
 
 
 if __name__ == "__main__":
-    raise Exception(
-        "No secret provider configured"
-    )
+    main()

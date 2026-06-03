@@ -1,0 +1,13 @@
+# Runtime generated env files
+.env
+*.env.local
+
+# Plaintext secrets
+secrets/secrets.env
+
+# Age private key
+secrets/age-key.txt
+
+# Temporary decrypted files
+*.dec.env
+*.decrypted
