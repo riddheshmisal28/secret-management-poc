@@ -12,22 +12,22 @@ The workflow relies on dockerized versions of `sops` and `age` to avoid requirin
 
 ```mermaid
 flowchart TD
-    subgraph Git Repository [Git Repository]
+    subgraph git_repo ["Git Repository"]
         A["secrets/secrets.enc.env (Encrypted)"]
     end
 
-    subgraph Developer / CI Local Files [Local Files (Git Ignored)]
+    subgraph local_files ["Local Files (Git Ignored)"]
         B["secrets/age-key.txt (Private Key)"]
         E[".env (Plaintext Env File)"]
     end
 
-    subgraph Docker runtime [Docker Orchestration]
+    subgraph docker_runtime ["Docker Orchestration"]
         C["scripts/run.ps1"]
         D["secret-tools-sops (Container)"]
         F["docker compose up"]
     end
 
-    subgraph App Container [Application Container]
+    subgraph app_container ["Application Container"]
         G["app/app.py"]
         H["EnvSecretProvider"]
     end
