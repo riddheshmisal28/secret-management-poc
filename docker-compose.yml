@@ -1,0 +1,43 @@
+services:
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: infisical
+      POSTGRES_PASSWORD: infisical
+      POSTGRES_DB: infisical
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+
+  infisical:
+    image: infisical/infisical:latest
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8080:8080"
+    environment:
+      DB_CONNECTION_URI: postgresql://infisical:infisical@postgres:5432/infisical
+      REDIS_URL: redis://redis:6379
+
+      AUTH_SECRET: super-secret-auth-key-for-poc
+      ENCRYPTION_KEY: a4f8d1c6e2b9a3f74c8d6e1b2a9f3c7d
+      SITE_URL: http://localhost:8080
+
+  app:
+    build: .
+    depends_on:
+      - infisical
+    environment:
+      INFISICAL_HOST: http://infisical:8080
+
+      INFISICAL_CLIENT_ID: ${INFISICAL_CLIENT_ID}
+      INFISICAL_CLIENT_SECRET: ${INFISICAL_CLIENT_SECRET}
+      INFISICAL_PROJECT_ID: ${INFISICAL_PROJECT_ID}
+      INFISICAL_ENV: dev
+
+volumes:
+  postgres_data:

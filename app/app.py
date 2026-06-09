@@ -1,17 +1,12 @@
 from config import Config
 
 
-def main(secret_provider):
-    config = Config(secret_provider)
-
-    print(f"DB Host: {config.db_host}")
-    print(f"DB User: {config.db_user}")
-    print(
-        f"DB Password: {'*' * len(config.db_password)}"
-    )
+def mask(value):
+    return "*" * len(value)
 
 
-if __name__ == "__main__":
-    raise Exception(
-        "No secret provider configured"
-    )
+print("=== Configuration Loaded ===")
+print(f"DB_HOST: {Config.DB_HOST}")
+print(f"DB_USER: {Config.DB_USER}")
+print(f"DB_PASSWORD: {mask(Config.DB_PASSWORD)}")
+print(f"JWT_SECRET: {mask(Config.JWT_SECRET)}")
