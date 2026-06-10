@@ -1,17 +1,16 @@
-from config import Config
+import os
+import hvac
 
+client = hvac.Client(
+    url=os.getenv("VAULT_ADDR"),
+    token=os.getenv("VAULT_TOKEN")
+)
 
-def main(secret_provider):
-    config = Config(secret_provider)
+secret = client.secrets.kv.v2.read_secret_version(
+    path="myapp"
+)
 
-    print(f"DB Host: {config.db_host}")
-    print(f"DB User: {config.db_user}")
-    print(
-        f"DB Password: {'*' * len(config.db_password)}"
-    )
+data = secret["data"]["data"]
 
-
-if __name__ == "__main__":
-    raise Exception(
-        "No secret provider configured"
-    )
+print(data["DB_USER"])
+print(data["DB_PASSWORD"])
