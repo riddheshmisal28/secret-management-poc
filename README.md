@@ -19,7 +19,7 @@ flowchart TD
     end
 
     Docker -->|1. Inject AppRole credentials as Env| App
-    App -->|2. Authenticate: AppRole Login (role_id & secret_id)| Vault
+    App -->|2. Authenticate: AppRole Login (role_id and secret_id)| Vault
     Vault -->|3. Validate & Return Client Token| App
     App -->|4. Read Secrets: KV v2 (path: myapp)| Vault
     Vault -->|5. Return Secrets (DB_USER, DB_PASSWORD)| App
