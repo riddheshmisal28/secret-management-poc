@@ -1,17 +1,37 @@
-from config import Config
+import os
+import hvac
+import psycopg2
 
+print("ROLE_ID =", repr(os.getenv("VAULT_ROLE_ID")))
+print("SECRET_ID =", repr(os.getenv("VAULT_SECRET_ID")))
 
-def main(secret_provider):
-    config = Config(secret_provider)
+client = hvac.Client(
+    url="http://vault:8200"
+)
 
-    print(f"DB Host: {config.db_host}")
-    print(f"DB User: {config.db_user}")
-    print(
-        f"DB Password: {'*' * len(config.db_password)}"
-    )
+login = client.auth.approle.login(
+    role_id=os.getenv("VAULT_ROLE_ID"),
+    secret_id=os.getenv("VAULT_SECRET_ID")
+)
 
+client.token = login["auth"]["client_token"]
 
-if __name__ == "__main__":
-    raise Exception(
-        "No secret provider configured"
-    )
+creds = client.read(
+    "database/creds/readonly"
+)
+
+username = creds["data"]["username"]
+password = creds["data"]["password"]
+
+print("Generated User:", username)
+
+conn = psycopg2.connect(
+    host="postgres",
+    database="myapp",
+    user=username,
+    password=password
+)
+
+print("Connected successfully!")
+
+conn.close()
